@@ -42,9 +42,8 @@ int main(int argc, char** argv) {
     }
     
     if(pid[0] == 0){//Filho 1
-        sleep(10);
-        int x;
         srand(time(NULL));
+        int x;
         close(fd[0][1]);//fecha a escrita do pipe 1
         close(fd[1][1]);//fecha a escrita do pipe 2
         close(fd[1][0]);//fecha a leitura do pipe 2
@@ -57,7 +56,7 @@ int main(int argc, char** argv) {
         read(fd[0][0], msg, sizeof(char)*tam);//recebe a msg escrita no pipe 1
         
         printf("\nP1: P1 aqui imprimindo msg:\n%s\n", msg);
-        sleep(1);
+        sleep(2);
         //Cria array
         int n = (rand() % 100) + 100;
         write(fd[2][1], &n, sizeof(int));
@@ -69,7 +68,7 @@ int main(int argc, char** argv) {
         close(fd[0][0]);//fecha a leitura do pipe 1
         close(fd[2][1]);//fecha a escrita do pipe 3
     }else if(pid[1] == 0){//Filho 2
-        sleep(11);
+        sleep(1);
         srand(time(NULL));
         int y;
         close(fd[0][0]);//fecha a leitura do pipe 1
@@ -84,7 +83,7 @@ int main(int argc, char** argv) {
         read(fd[1][0], msg, sizeof(char)*tam);//recebe a msg escrita no pipe 1
         
         printf("P2: P2 aqui imprimindo msg:\n%s\n", msg);
-        sleep(1);
+        sleep(2);
         //Cria array
         int n = (rand() % 100) + 100;
         write(fd[2][1], &n, sizeof(int));
@@ -96,7 +95,6 @@ int main(int argc, char** argv) {
         close(fd[1][0]);//fecha a leitura do pipe 2
         close(fd[2][1]);//fecha a escrita do pipe 3
     }else if(pid[2] == 0){//Filho 3
-        sleep(14);
         close(fd[0][0]);//fecha a leitura do pipe 1
         close(fd[0][1]);//fecha a escrita do pipe 1
         close(fd[1][0]);//fecha a leitura do pipe 2
@@ -122,11 +120,13 @@ int main(int argc, char** argv) {
         close(fd[2][0]);//fecha a leitura do pipe 3
     }else {//Pai        
         int x, y;
-        printf("PO:Digite o valor de x: ");
-        scanf("%d", &x);
-        printf("PO:Digite o valor de y: ");
-        scanf("%d", &y);
         
+        do{
+            printf("PO:Digite o valor de x: ");
+            scanf("%d", &x);
+            printf("PO:Digite o valor de y: ");
+            scanf("%d", &y);
+        }while(x<1||x>5||y<6||y>10);
         //P0 envia para o filho P1 via pipe (pipe1) o valor de X.
         close(fd[0][0]);//fecha a leitura do pipe 1
         close(fd[1][0]);//fecha a leitura do pipe 2
@@ -143,7 +143,7 @@ int main(int argc, char** argv) {
         int tam1 = strlen(ms1)+1;
         write(fd[0][1], &tam1, sizeof(int));//envia para o pipe 1 o tamanho de msg1
         write(fd[0][1], ms1, sizeof(char)*tam1);//envia para o pipe 1 a msg1
-        
+        sleep(1);
         //P0 envia para P2, pelo mesmo pipe1, a seguinte mensagem ms2
         char* ms2 = "Meu filho, crie e envie para o seu irmão P3 um array de tamanho randômico entre 100 e 200, preenchido completamente com o valor Y";
         int tam2 = strlen(ms2)+1;
